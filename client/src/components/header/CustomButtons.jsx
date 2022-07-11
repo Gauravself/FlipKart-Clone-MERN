@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { Box, styled, Button, Typography } from "@mui/material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import LoginDailog from "../login/LoginDailog";
 
 const Wrapper = styled(Box)`
   display: flex;
@@ -29,9 +31,15 @@ const CartContainer = styled(Box)`
 `;
 
 const CustomButtons = () => {
+  const [toggle, setToggle] = useState(false);
+  const handleToggle = () => {
+    setToggle(true);
+  };
   return (
     <Wrapper>
-      <Loginbutton variant="contained">Login</Loginbutton>
+      <Loginbutton variant="contained" onClick={handleToggle}>
+        Login
+      </Loginbutton>
       <Typography style={{ marginTop: 3, width: 135 }}>
         Become a Seller
       </Typography>
@@ -40,6 +48,7 @@ const CustomButtons = () => {
         <ShoppingCartIcon />
         <Typography>Cart</Typography>
       </CartContainer>
+      <LoginDailog toggle={toggle} setToggle={setToggle} />
     </Wrapper>
   );
 };
