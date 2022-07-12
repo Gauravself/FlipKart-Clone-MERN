@@ -1,5 +1,4 @@
-import { useState } from "react";
-
+import { useState, useContext } from "react";
 import {
   Dialog,
   Box,
@@ -8,8 +7,8 @@ import {
   Typography,
   styled,
 } from "@mui/material";
-
 import { authenticateSignup } from "../../services/api";
+import { DataContext } from "../context/DataProvider";
 
 const Component = styled(Box)`
   height: 70vh;
@@ -28,7 +27,6 @@ const Image = styled(Box)`
     font-weight: 600;
   }
 `;
-
 const Wrapper = styled(Box)`
   display: flex;
   flex-direction: column;
@@ -40,7 +38,6 @@ const Wrapper = styled(Box)`
     margin-top: 20px;
   }
 `;
-
 const LoginButton = styled(Button)`
   text-transform: none;
   background: #fb6418;
@@ -56,12 +53,10 @@ const OtpButton = styled(Button)`
   border-radius: 2px;
   box-shadow: 0 2px 4px 0 rgb(0 0 0/ 20%);
 `;
-
 const Text = styled(Typography)`
   font-size: 12px;
   color: #878787;
 `;
-
 const CreateAccount = styled(Typography)`
   font-size: 14px;
   text-align: center;
@@ -69,7 +64,6 @@ const CreateAccount = styled(Typography)`
   font-weight: 600;
   cursor: pointer;
 `;
-
 const accountInitialState = {
   login: {
     view: "login",
@@ -82,7 +76,6 @@ const accountInitialState = {
     subHeading: "Sign up with your mobile number to get started",
   },
 };
-
 const signUpInitialValue = {
   name: "",
   userName: "",
@@ -94,6 +87,7 @@ const signUpInitialValue = {
 const LoginDailog = (props) => {
   const [register, setRegister] = useState(accountInitialState.login);
   const [signUp, setSignUp] = useState(signUpInitialValue);
+  const { setAccount } = useContext(DataContext);
 
   const registerHandler = () => {
     setRegister(accountInitialState.signup);
@@ -109,6 +103,11 @@ const LoginDailog = (props) => {
 
   const signUpUser = async () => {
     const response = await authenticateSignup(signUp);
+    if (!response) {
+      return;
+    }
+    handleClose();
+    setAccount(signUp.name);
   };
 
   return (

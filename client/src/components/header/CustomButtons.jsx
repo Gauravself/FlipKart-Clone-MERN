@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { Box, styled, Button, Typography } from "@mui/material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import LoginDailog from "../login/LoginDailog";
+import { DataContext } from "../context/DataProvider";
+import Profile from "./Profile";
 
 const Wrapper = styled(Box)`
   display: flex;
@@ -32,14 +34,19 @@ const CartContainer = styled(Box)`
 
 const CustomButtons = () => {
   const [toggle, setToggle] = useState(false);
+  const { account, setAccount } = useContext(DataContext);
   const handleToggle = () => {
     setToggle(true);
   };
   return (
     <Wrapper>
-      <Loginbutton variant="contained" onClick={handleToggle}>
-        Login
-      </Loginbutton>
+      {account ? (
+        <Profile account={account} setAccount={setAccount} />
+      ) : (
+        <Loginbutton variant="contained" onClick={handleToggle}>
+          Login
+        </Loginbutton>
+      )}
       <Typography style={{ marginTop: 3, width: 135 }}>
         Become a Seller
       </Typography>
