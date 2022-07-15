@@ -31,7 +31,12 @@ const Profile = (props) => {
         </Typography>
       </Box>
       <Component anchorEl={open} open={Boolean(open)} onClose={handleClose}>
-        <MenuItem onClick={(handleClose(), Logout())}>
+        <MenuItem
+          onClick={() => {
+            handleClose();
+            Logout();
+          }}
+        >
           <PowerSettingsNewIcon color="primary" fontSize="small" />
           <LogoutBtn>Logout</LogoutBtn>
         </MenuItem>

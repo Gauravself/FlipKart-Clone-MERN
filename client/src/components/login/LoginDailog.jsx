@@ -7,7 +7,7 @@ import {
   Typography,
   styled,
 } from "@mui/material";
-import { authenticateSignup } from "../../services/api";
+import { authenticateSignup, authenticateLogin } from "../../services/api";
 import { DataContext } from "../context/DataProvider";
 
 const Component = styled(Box)`
@@ -64,6 +64,13 @@ const CreateAccount = styled(Typography)`
   font-weight: 600;
   cursor: pointer;
 `;
+const Error = styled(Typography)`
+  font-size: 12px;
+  color: #ff6161;
+  line-height: 0;
+  margin-top: 10px;
+  font-weight: 600px;
+`;
 const accountInitialState = {
   login: {
     view: "login",
@@ -84,9 +91,16 @@ const signUpInitialValue = {
   phone: "",
 };
 
+const loginInitialValues = {
+  userName: "",
+  password: "",
+};
+
 const LoginDailog = (props) => {
   const [register, setRegister] = useState(accountInitialState.login);
   const [signUp, setSignUp] = useState(signUpInitialValue);
+  const [login, setlogin] = useState(loginInitialValues);
+  const [error, setError] = useState(false);
   const { setAccount } = useContext(DataContext);
 
   const registerHandler = () => {
@@ -95,6 +109,7 @@ const LoginDailog = (props) => {
   const handleClose = () => {
     props.setToggle(false);
     setRegister(accountInitialState.login);
+    setError(false);
   };
 
   const onValueEnterHandler = (e) => {
@@ -108,6 +123,22 @@ const LoginDailog = (props) => {
     }
     handleClose();
     setAccount(signUp.name);
+  };
+  const loginUser = async () => {
+    const response = await authenticateLogin(login);
+    if (!response) {
+      return;
+    }
+    if (response.status === 200) {
+      handleClose();
+      setAccount(response.data.data.name);
+    } else {
+      setError(true);
+    }
+  };
+
+  const onLoginEnterHandler = (e) => {
+    setlogin({ ...login, [e.target.name]: e.target.value });
   };
 
   return (
@@ -126,13 +157,25 @@ const LoginDailog = (props) => {
           </Image>
           {register.view === "login" ? (
             <Wrapper>
-              <TextField variant="standard" label="Enter Email/Mobile number" />
-              <TextField variant="standard" label="Enter Password" />
+              <TextField
+                variant="standard"
+                name="userName"
+                onChange={onLoginEnterHandler}
+                label="Enter Username"
+              />
+
+              <TextField
+                variant="standard"
+                name="password"
+                onChange={onLoginEnterHandler}
+                label="Enter Password"
+              />
+              {error && <Error>Please enter valid Username or Password</Error>}
               <Text>
                 By continuing, you agree to Flipkart's Terms of Use and Privacy
                 Policy.
               </Text>
-              <LoginButton>Login</LoginButton>
+              <LoginButton onClick={loginUser}>Login</LoginButton>
               <Typography style={{ textAlign: "center" }}>OR</Typography>
               <OtpButton>Request OTP</OtpButton>
               <CreateAccount onClick={registerHandler}>

@@ -19,4 +19,20 @@ const userSignUp = catchAsyncErrors(async (req, res, next) => {
   });
 });
 
-module.exports = userSignUp;
+const userLogin = catchAsyncErrors(async (req, res, next) => {
+  const user = await User.findOne({
+    userName: req.body.userName,
+    password: req.body.password,
+  });
+  if (!user) {
+    return res.status(401).json({
+      success: false,
+      message: "User does not exists",
+    });
+  }
+  res
+    .status(200)
+    .json({ success: true, message: `${user.userName} Login successfull` });
+});
+
+module.exports = { userSignUp, userLogin };
